@@ -4,7 +4,7 @@ from pypdf import PdfReader
 st.set_page_config(
     page_title="Multi-PDF RAG Chatbot",
     page_icon="📚"
-) 
+)
 
 st.title("📚 Multi-PDF RAG Chatbot")
 
@@ -18,26 +18,25 @@ if uploaded_files:
     st.success(f"{len(uploaded_files)} PDF(s) uploaded successfully!")
 
     for pdf in uploaded_files:
-        st.write(pdf.name)
-
-
-if uploaded_files:
-    st.success(f"{len(uploaded_files)} PDF(s) uploaded successfully!")
-
-    for pdf in uploaded_files:
         st.subheader(f"📄 {pdf.name}")
 
         reader = PdfReader(pdf)
+        number_of_pages = len(reader.pages)
 
-        st.write(f"Pages: {len(reader.pages)}")
+        st.write(f"**Total Pages:** {number_of_pages}")
 
-        text = ""
+        extracted_text = ""
 
         for page in reader.pages:
-            text += page.extract_text() or ""
+            page_text = page.extract_text()
+            if page_text:
+                extracted_text += page_text
 
-        st.text_area(
-            "Preview",
-            text[:1000],
-            height=200
-        )
+        st.write(f"**Extracted Characters:** {len(extracted_text)}")
+
+        with st.expander("Preview extracted text"):
+            st.text_area(
+                "Text Preview",
+                extracted_text[:1500],
+                height=250
+            )
